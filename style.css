@@ -1,0 +1,249 @@
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  background-color: #f3f4f6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.app-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.app-bar h3 {
+  background-color: #3f51b5;
+  color: white;
+  width: 400px;
+  padding: 2rem;
+  border-radius: 8px;
+  margin-top: -20px;
+}
+
+/* Centered login-form style container */
+.planner-container {
+  width: 400px;
+  margin: 0rem auto;
+  padding: 2rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+  font-size: 16px;
+}
+
+::-webkit-scrollbar {
+  width: 0;
+}
+
+/* form layout: grid + button side by side */
+.form-layout {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* 2x2 input grid */
+.input-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 160px);
+  grid-template-rows: auto auto;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
+/* Full width inputs inside cells */
+.input-grid .mdl-textfield {
+  width: 100%;
+  display: block !important;
+  border-radius: 7px;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.193);
+  padding: 4px 8px;
+  background-color: white;
+  transition: box-shadow 0.3s ease;
+  border-left: 5px solid #ff4081;
+}
+
+.input-grid .mdl-textfield:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.18);
+}
+
+.input-grid .mdl-textfield .mdl-textfield__input {
+  background: transparent;
+  padding: 12px 12px 12px 0px;
+  box-shadow: none !important;
+  border: none;
+  outline: none;
+  transition: background-color 0.3s ease;
+}
+
+/* Hide default placeholder only when input is empty and not focused */
+input[type="date"]:not(:focus):not(:valid),
+input[type="time"]:not(:focus):not(:valid) {
+  color: transparent;
+}
+
+/* Show input content when focused or valid */
+input[type="date"]:focus,
+input[type="date"]:valid,
+input[type="time"]:focus,
+input[type="time"]:valid {
+  color: black;
+}
+
+input {
+  font-size: 10px;
+}
+
+/* Smooth floating label transition */
+.label_1 {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  /* allow clicking input below label */
+  transform-origin: left top;
+  transform: translateY(0.2rem) translateX(5px) scale(1);
+  color: #ff4081;
+  position: absolute;
+  left: 8px;
+  top: 12px;
+  font-size: 15px !important;
+}
+
+.label_2 {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  /* allow clicking input below label */
+  transform-origin: left top;
+  transform: translateY(0.4rem) translateX(5px) scale(1);
+  color: #ff4081;
+  position: absolute;
+  left: 8px;
+  top: 12px;
+  font-size: 15px !important;
+}
+
+/* When input is focused or has value, float the label */
+.mdl-textfield.is-focused .mdl-textfield__label,
+.mdl-textfield.is-dirty .mdl-textfield__label {
+  transform: translateY(0) translateX(-1px) scale(0.7);
+  color: #ff4081;
+}
+
+/* Input background darkens smoothly on focus */
+.mdl-textfield__input {
+  transition: background-color 0.3s ease;
+}
+
+.mdl-textfield__input:focus {
+  background-color: #e0e0e0;
+  outline: none;
+  border: none;
+  box-shadow: none;
+}
+
+/* Remove underline animation */
+.mdl-textfield:before,
+.mdl-textfield:after,
+.mdl-textfield__label:after {
+  display: none !important;
+  background: none !important;
+}
+
+/* Plus button next to the input grid */
+.add-btn-container button {
+  min-width: 0 !important;
+  width: 53px;
+  height: 120px;
+  border-radius: 8px;
+  font-size: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.193);
+  padding: 0;
+}
+
+/* Task list styles */
+#task-list {
+  max-height: 200px;
+  overflow: auto;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2) inset;
+  border-radius: 7px;
+  margin-top: 2rem;
+}
+
+.task-row {
+  display: flex;
+  justify-content: space-between;
+  border-radius: 7px;
+  padding: 7px 10px;
+  margin: 0.6rem 0.55rem;
+  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.193);
+  align-items: center;
+  border-left: 5px solid #3f51b5;
+}
+
+.task-subject,
+.task-meta {
+  margin: 2px;
+}
+
+.task-row.done .task-subject {
+  text-decoration: line-through;
+  color: #999;
+}
+
+.task-row.done {
+  border-left: 5px solid #00c853;
+}
+
+.task-info {
+  display: flex;
+  flex-direction: column;
+  max-width: 250px;
+  overflow-wrap: break-word;
+}
+
+.task-subject {
+  font-weight: 600;
+}
+
+.task-meta {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.task-actions button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  outline: none;
+  padding: 0 8px;
+  font-size: 22px;
+  transition: color 0.2s;
+}
+
+/* Colored icons */
+
+/* Tick icon in green */
+.check-btn i {
+  color: #00c853;
+}
+
+/* Undo icon in grey */
+.undo-btn i {
+  color: #757575;
+}
+
+/* Delete icon in red */
+.delete-btn i {
+  color: #d32f2f;
+}
+
+.task-actions button:hover i {
+  filter: brightness(1.2);
+}
