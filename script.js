@@ -34,31 +34,31 @@ document.addEventListener('DOMContentLoaded', () => {
   window.toggleDone = (idx) => { tasks[idx].done = !tasks[idx].done; saveTasks(); renderTasks(); };
   window.deleteTask = (idx) => { tasks.splice(idx, 1); saveTasks(); renderTasks(); };
 
-  // Listen for the FORM submit instead of just the button click
+  // Optimized Submit Handler
   document.getElementById('task-form').addEventListener('submit', function(e) {
     e.preventDefault();
 
-    if (!("Notification" in window)) {
-      alert("This browser does not support desktop notification");
+    const proceedWithTask = () => {
       addTask();
-      return;
-    }
+    };
 
-    // Direct request: if permission is 'default' (not yet asked)
-    if (Notification.permission === 'default') {
+    if (!("Notification" in window)) {
+      alert("Browser does not support notifications.");
+      proceedWithTask();
+    } else if (Notification.permission === 'granted') {
+      proceedWithTask();
+    } else if (Notification.permission !== 'denied') {
+      // This is the critical part that triggers the "Ask" prompt
       Notification.requestPermission().then(permission => {
         if (permission === 'granted') {
-          console.log("Permission granted!");
-        } else {
-          alert('Reminders are disabled because permission was denied.');
+          console.log("Notification enabled");
         }
-        addTask();
+        proceedWithTask();
       });
-    } else if (Notification.permission === 'denied') {
-      alert('Notifications are blocked in browser settings. Please enable them to get reminders.');
-      addTask();
     } else {
-      addTask(); // Already granted
+      // Permission is denied
+      alert("Notifications are blocked. Please enable them in your browser settings to receive study reminders.");
+      proceedWithTask();
     }
   });
 
@@ -72,7 +72,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!subject || !topic || !date || !time) return;
 
     tasks.push({ subject, topic, date, time, done: false, notified: false });
-
     saveTasks();
     renderTasks();
 
@@ -84,19 +83,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Check for upcoming tasks
   setInterval(() => {
     if (Notification.permission !== 'granted') return;
-
     const now = new Date();
     tasks.forEach((task, idx) => {
       if (task.done || task.notified) return;
       const taskTime = new Date(`${task.date}T${task.time}:00`);
       const diff = taskTime - now;
-      
-      // Notify if task is within the next 60 seconds
       if (diff > 0 && diff < 60000) {
         new Notification('📚 Study Reminder', { 
-            body: `Time for ${task.subject}: ${task.topic}`,
+            body: `Time to study ${task.subject}: ${task.topic}`,
             icon: 'favicon.png' 
         });
         tasks[idx].notified = true;
