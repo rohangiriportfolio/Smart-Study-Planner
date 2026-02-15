@@ -6,8 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function renderTasks() {
     const taskList = document.getElementById('task-list');
-    taskList.innerHTML = tasks.length === 0
-      ? '<p style="color:#999; text-align:center; padding:20px;">No tasks yet.</p>'
+    taskList.innerHTML = tasks.length === 0 
+      ? '<p style="color:#999; text-align:center; padding:20px;">No tasks yet.</p>' 
       : '';
 
     tasks.forEach((task, idx) => {
@@ -31,34 +31,34 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  window.toggleDone = (idx) => {
-    tasks[idx].done = !tasks[idx].done;
-    saveTasks();
-    renderTasks();
-  };
+  window.toggleDone = (idx) => { tasks[idx].done = !tasks[idx].done; saveTasks(); renderTasks(); };
+  window.deleteTask = (idx) => { tasks.splice(idx, 1); saveTasks(); renderTasks(); };
 
-  window.deleteTask = (idx) => {
-    tasks.splice(idx, 1);
-    saveTasks();
-    renderTasks();
-  };
+  // Listen for the FORM submit instead of just the button click
+  document.getElementById('task-form').addEventListener('submit', function(e) {
+    e.preventDefault();
 
-  // Handle add button click directly
-  const addBtn = document.querySelector('#task-form button[type="submit"]');
-  addBtn.addEventListener('click', (e) => {
-    e.preventDefault(); // stop default form submit
-
-    // Ask for permission if not granted
-    if ('Notification' in window && Notification.permission !== 'granted') {
-      Notification.requestPermission().then(permission => {
-        if (permission !== 'granted') {
-          alert('Enable notifications to receive reminders.');
-        } else {
-          addTask();
-        }
-      });
-    } else {
+    if (!("Notification" in window)) {
+      alert("This browser does not support desktop notification");
       addTask();
+      return;
+    }
+
+    // Direct request: if permission is 'default' (not yet asked)
+    if (Notification.permission === 'default') {
+      Notification.requestPermission().then(permission => {
+        if (permission === 'granted') {
+          console.log("Permission granted!");
+        } else {
+          alert('Reminders are disabled because permission was denied.');
+        }
+        addTask();
+      });
+    } else if (Notification.permission === 'denied') {
+      alert('Notifications are blocked in browser settings. Please enable them to get reminders.');
+      addTask();
+    } else {
+      addTask(); // Already granted
     }
   });
 
@@ -71,19 +71,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (!subject || !topic || !date || !time) return;
 
-    tasks.push({
-      subject,
-      topic,
-      date,
-      time,
-      done: false,
-      notified: false
-    });
+    tasks.push({ subject, topic, date, time, done: false, notified: false });
 
     saveTasks();
     renderTasks();
 
-    // Reset form and MDL label state
     form.reset();
     const containers = form.querySelectorAll('.mdl-textfield');
     containers.forEach(c => {
@@ -92,7 +84,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Check tasks every 10 seconds
   setInterval(() => {
     if (Notification.permission !== 'granted') return;
 
@@ -100,8 +91,14 @@ document.addEventListener('DOMContentLoaded', () => {
     tasks.forEach((task, idx) => {
       if (task.done || task.notified) return;
       const taskTime = new Date(`${task.date}T${task.time}:00`);
-      if (taskTime - now > 0 && taskTime - now < 60000) {
-        new Notification('Study Reminder', { body: `${task.subject}: ${task.topic}` });
+      const diff = taskTime - now;
+      
+      // Notify if task is within the next 60 seconds
+      if (diff > 0 && diff < 60000) {
+        new Notification('📚 Study Reminder', { 
+            body: `Time for ${task.subject}: ${task.topic}`,
+            icon: 'favicon.png' 
+        });
         tasks[idx].notified = true;
         saveTasks();
       }
