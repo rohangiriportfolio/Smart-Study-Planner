@@ -31,46 +31,57 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Toggle task done
   window.toggleDone = (idx) => {
     tasks[idx].done = !tasks[idx].done;
     saveTasks();
     renderTasks();
   };
 
+  // Delete task
   window.deleteTask = (idx) => {
     tasks.splice(idx, 1);
     saveTasks();
     renderTasks();
   };
 
-  function requestNotificationPermission() {
-    if (!('Notification' in window)) return; // Browser doesn't support
+  // Add task
+  const form = document.getElementById('task-form');
+  const addBtn = document.getElementById('add-btn');
+
+  // Ask notification permission on button click
+  addBtn.addEventListener('click', (e) => {
+    if (!('Notification' in window)) return;
+
     if (Notification.permission === 'default') {
-      // Ask permission
       Notification.requestPermission().then(permission => {
         if (permission === 'granted') {
-          console.log('Notification permission granted.');
+          console.log('Notifications enabled');
         } else if (permission === 'denied') {
-          console.warn('Notification permission denied.');
+          alert('You blocked notifications. Enable them in browser settings.');
         }
       });
     } else if (Notification.permission === 'denied') {
-      alert('You have blocked notifications. To receive reminders, enable them in your browser settings.');
+      alert('Notifications are blocked. Enable them in your browser settings to receive reminders.');
     }
-    // If already granted, nothing to do
-  }
+  });
 
-  document.getElementById('task-form').addEventListener('submit', (e) => {
+  // Submit form to save task
+  form.addEventListener('submit', (e) => {
     e.preventDefault();
 
-    // Request permission on user action
-    requestNotificationPermission();
+    const subject = document.getElementById('subject').value.trim();
+    const topic = document.getElementById('topic').value.trim();
+    const date = document.getElementById('task-date').value;
+    const time = document.getElementById('task-time').value;
+
+    if (!subject || !topic || !date || !time) return;
 
     tasks.push({
-      subject: document.getElementById('subject').value,
-      topic: document.getElementById('topic').value,
-      date: document.getElementById('task-date').value,
-      time: document.getElementById('task-time').value,
+      subject,
+      topic,
+      date,
+      time,
       done: false,
       notified: false
     });
@@ -79,22 +90,25 @@ document.addEventListener('DOMContentLoaded', () => {
     renderTasks();
     e.target.reset();
 
-    // Reset MDL UI state
-    const containers = e.target.querySelectorAll('.mdl-textfield');
+    // Reset MDL labels
+    const containers = form.querySelectorAll('.mdl-textfield');
     containers.forEach(c => {
-      c.classList.remove('is-dirty', 'is-focused');
+      c.classList.remove('is-dirty');
+      c.classList.remove('is-focused');
     });
   });
 
+  // Notification check every 10 seconds
   setInterval(() => {
+    if (Notification.permission !== 'granted') return;
+
     const now = new Date();
     tasks.forEach((task, idx) => {
       if (task.done || task.notified) return;
-      const t = new Date(`${task.date}T${task.time}:00`);
-      if (t - now > 0 && t - now < 60000) {
-        if (Notification.permission === 'granted') {
-          new Notification('Study Reminder', { body: `${task.subject}: ${task.topic}` });
-        }
+      const taskTime = new Date(`${task.date}T${task.time}:00`);
+      const diff = taskTime - now;
+      if (diff > 0 && diff < 60000) { // within next 60 seconds
+        new Notification('Study Reminder', { body: `${task.subject}: ${task.topic}` });
         tasks[idx].notified = true;
         saveTasks();
       }
