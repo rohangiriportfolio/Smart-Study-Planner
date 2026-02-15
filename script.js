@@ -43,20 +43,27 @@ document.addEventListener('DOMContentLoaded', () => {
     renderTasks();
   };
 
-  // Form submit listener (handle permission and add task)
-  const form = document.getElementById('task-form');
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
+  // Handle add button click directly
+  const addBtn = document.querySelector('#task-form button[type="submit"]');
+  addBtn.addEventListener('click', (e) => {
+    e.preventDefault(); // stop default form submit
 
-    // Ask notification permission if not granted
-    if ('Notification' in window && Notification.permission === 'default') {
+    // Ask for permission if not granted
+    if ('Notification' in window && Notification.permission !== 'granted') {
       Notification.requestPermission().then(permission => {
         if (permission !== 'granted') {
           alert('Enable notifications to receive reminders.');
+        } else {
+          addTask();
         }
       });
+    } else {
+      addTask();
     }
+  });
 
+  function addTask() {
+    const form = document.getElementById('task-form');
     const subject = document.getElementById('subject').value.trim();
     const topic = document.getElementById('topic').value.trim();
     const date = document.getElementById('task-date').value;
@@ -75,17 +82,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     saveTasks();
     renderTasks();
-    e.target.reset();
 
-    // Reset MDL labels
+    // Reset form and MDL label state
+    form.reset();
     const containers = form.querySelectorAll('.mdl-textfield');
     containers.forEach(c => {
       c.classList.remove('is-dirty');
       c.classList.remove('is-focused');
     });
-  });
+  }
 
-  // Check notifications every 10 seconds
+  // Check tasks every 10 seconds
   setInterval(() => {
     if (Notification.permission !== 'granted') return;
 
