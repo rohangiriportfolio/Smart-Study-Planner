@@ -1,249 +1,241 @@
+* {
+  box-sizing: border-box;
+}
+
+/* BODY */
 body {
   margin: 0;
   font-family: 'Roboto', sans-serif;
-  background-color: #f3f4f6;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.app-bar {
+  background-color: #e5e5e5;
   display: flex;
   justify-content: center;
   align-items: center;
-  text-align: center;
+  min-height: 100vh;
 }
 
+/* HEADER */
 .app-bar h3 {
   background-color: #3f51b5;
   color: white;
-  width: 400px;
-  padding: 2rem;
-  border-radius: 8px;
-  margin-top: -20px;
+  width: 560px;
+  padding: 1.2rem;
+  border-radius: 10px 10px 0 0;
+  text-align: center;
+  margin: 0;
 }
 
-/* Centered login-form style container */
+/* MAIN CARD */
 .planner-container {
-  width: 400px;
-  margin: 0rem auto;
-  padding: 2rem;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-  font-size: 16px;
+  width: 560px;
+  background: #f2f2f2;
+  padding: 2rem 1.5rem 1.5rem;
+  border-radius: 0 0 10px 10px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
 }
 
-::-webkit-scrollbar {
-  width: 0;
-}
-
-/* form layout: grid + button side by side */
+/* FORM LAYOUT */
 .form-layout {
   display: flex;
-  align-items: center;
-  gap: 1rem;
+  gap: 14px;
+  align-items: stretch;
 }
 
-/* 2x2 input grid */
+/* LEFT SIDE (2 rows stacked) */
 .input-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 160px);
-  grid-template-rows: auto auto;
-  gap: 1rem;
-  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex: 1;
 }
 
-/* Full width inputs inside cells */
-.input-grid .mdl-textfield {
-  width: 100%;
-  display: block !important;
-  border-radius: 7px;
-  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.193);
-  padding: 4px 8px;
-  background-color: white;
-  transition: box-shadow 0.3s ease;
+/* EACH ROW (2 inputs side-by-side) */
+.input-row {
+  display: flex;
+  gap: 14px;
+  height: 65px;
+}
+
+/* EACH INPUT TAKES EQUAL WIDTH */
+.input-row .mdl-textfield {
+  flex: 1;
+  height: 100%;
+}
+
+/* INPUT BOX STYLE */
+.mdl-textfield {
+  background: #ffffff;
+  border-radius: 12px;
   border-left: 5px solid #ff4081;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+  padding: 12px;
+  position: relative;
 }
 
-.input-grid .mdl-textfield:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.18);
+/* REMOVE MDL UNDERLINE */
+.mdl-textfield:before,
+.mdl-textfield:after {
+  display: none !important;
 }
 
-.input-grid .mdl-textfield .mdl-textfield__input {
-  background: transparent;
-  padding: 12px 12px 12px 0px;
-  box-shadow: none !important;
+/* INPUT TEXT */
+.mdl-textfield__input {
   border: none;
+  font-size: 14px;
+  padding: 4px 0;
+  background: transparent;
   outline: none;
-  transition: background-color 0.3s ease;
 }
 
-/* Hide default placeholder only when input is empty and not focused */
+/* Universal placeholder color */
+input::placeholder {
+  color: #888;
+  opacity: 1; /* Make sure it’s fully visible in browsers like Firefox */
+}
+
+/* For MDL floating labels, keep them above the input */
+.mdl-textfield__label {
+  color: #888; /* default label color */
+}
+
+
+/* Optional hover effect */
+.mdl-textfield:hover {
+  box-shadow: 0 5px 12px rgba(0,0,0,0.15);
+}
+
 input[type="date"]:not(:focus):not(:valid),
 input[type="time"]:not(:focus):not(:valid) {
-  color: transparent;
+  color: #888; 
 }
 
-/* Show input content when focused or valid */
-input[type="date"]:focus,
-input[type="date"]:valid,
-input[type="time"]:focus,
-input[type="time"]:valid {
-  color: black;
+/* Date & Time picker icons */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(50%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(0.5); 
+  /* This makes the icon appear gray (#888-ish) */
+  cursor: pointer; /* keep it clickable */
 }
 
-input {
-  font-size: 10px;
+
+/* Time picker icon styling */
+input[type="time"]::-webkit-calendar-picker-indicator {
+  filter: invert(50%) sepia(0%) saturate(0%) hue-rotate(0deg) brightness(0.5); /* #888 color */
+  transform: scale(0.8); /* make it slightly smaller */
+  cursor: pointer;
 }
 
-/* Smooth floating label transition */
-.label_1 {
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+
+
+/* LABEL DEFAULT */
+.mdl-textfield__label {
+  display: block;
   pointer-events: none;
-  /* allow clicking input below label */
-  transform-origin: left top;
-  transform: translateY(0.2rem) translateX(5px) scale(1);
+  top: 22px;
+  left: 12px;
+  font-size: 14px;
   color: #ff4081;
-  position: absolute;
-  left: 8px;
-  top: 12px;
-  font-size: 15px !important;
 }
 
-.label_2 {
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  pointer-events: none;
-  /* allow clicking input below label */
-  transform-origin: left top;
-  transform: translateY(0.4rem) translateX(5px) scale(1);
-  color: #ff4081;
-  position: absolute;
-  left: 8px;
-  top: 12px;
-  font-size: 15px !important;
-}
-
-/* When input is focused or has value, float the label */
+/* FLOATING LABEL */
 .mdl-textfield.is-focused .mdl-textfield__label,
 .mdl-textfield.is-dirty .mdl-textfield__label {
-  transform: translateY(0) translateX(-1px) scale(0.7);
+  top: 6px;
+  font-size: 12px;
   color: #ff4081;
 }
 
-/* Input background darkens smoothly on focus */
-.mdl-textfield__input {
-  transition: background-color 0.3s ease;
+/* ADD BUTTON CONTAINER */
+.add-btn-container {
+  display: flex;
 }
 
-.mdl-textfield__input:focus {
-  background-color: #e0e0e0;
-  outline: none;
-  border: none;
-  box-shadow: none;
-}
-
-/* Remove underline animation */
-.mdl-textfield:before,
-.mdl-textfield:after,
-.mdl-textfield__label:after {
-  display: none !important;
-  background: none !important;
-}
-
-/* Plus button next to the input grid */
+/* Add/Submit button */
 .add-btn-container button {
-  min-width: 0 !important;
-  width: 53px;
-  height: 120px;
-  border-radius: 8px;
-  font-size: 32px;
+  width: 60px;
+  min-width: 60px;
+  border: none;
+  border-radius: 12px !important;
+  font-size: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.193);
-  padding: 0;
+  background-color: #ff4081; /* Pink background */
+  color: #fff; /* White icon/text */
+  box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+  transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
-/* Task list styles */
+/* Hover effect for feedback */
+.add-btn-container button:hover {
+  box-shadow: 0 5px 12px rgba(0,0,0,0.15);
+  cursor: pointer;
+}
+
+
+/* TASK LIST */
 #task-list {
-  max-height: 200px;
-  overflow: auto;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2) inset;
-  border-radius: 7px;
-  margin-top: 2rem;
+  margin-top: 25px;
+  max-height: 260px;
+  overflow-y: auto;
+  border-top: 1px solid #ddd;
+  padding-top: 18px;
 }
 
+/* TASK CARD */
 .task-row {
   display: flex;
   justify-content: space-between;
-  border-radius: 7px;
-  padding: 7px 10px;
-  margin: 0.6rem 0.55rem;
-  box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.193);
   align-items: center;
+  background: #ffffff;
+  padding: 12px 14px;
+  margin-bottom: 12px;
   border-left: 5px solid #3f51b5;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  transition: 0.2s ease;
 }
 
-.task-subject,
-.task-meta {
-  margin: 2px;
+.task-row:hover {
+  box-shadow: 0 5px 12px rgba(0,0,0,0.15);
+}
+
+/* COMPLETED TASK */
+.task-row.done {
+  border-left-color: #00c853;
+  opacity: 0.7;
 }
 
 .task-row.done .task-subject {
   text-decoration: line-through;
-  color: #999;
 }
 
-.task-row.done {
-  border-left: 5px solid #00c853;
-}
-
+/* TASK INFO */
 .task-info {
   display: flex;
   flex-direction: column;
-  max-width: 250px;
-  overflow-wrap: break-word;
+  max-width: 70%;
 }
 
 .task-subject {
   font-weight: 600;
+  font-size: 14px;
 }
 
 .task-meta {
-  font-size: 0.85rem;
-  color: #666;
+  font-size: 12px;
+  color: #777;
+  margin-top: 4px;
 }
 
+/* TASK ACTION BUTTONS */
 .task-actions button {
   background: none;
   border: none;
   cursor: pointer;
-  outline: none;
-  padding: 0 8px;
-  font-size: 22px;
-  transition: color 0.2s;
+  padding: 6px;
 }
 
-/* Colored icons */
-
-/* Tick icon in green */
-.check-btn i {
-  color: #00c853;
-}
-
-/* Undo icon in grey */
-.undo-btn i {
-  color: #757575;
-}
-
-/* Delete icon in red */
-.delete-btn i {
-  color: #d32f2f;
-}
-
-.task-actions button:hover i {
-  filter: brightness(1.2);
-}
+/* ICON COLORS */
+.check-btn i { color: #00c853; }
+.undo-btn i { color: #757575; }
+.delete-btn i { color: #d32f2f; }
