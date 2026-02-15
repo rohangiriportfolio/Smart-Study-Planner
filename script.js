@@ -31,44 +31,31 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Toggle task done
   window.toggleDone = (idx) => {
     tasks[idx].done = !tasks[idx].done;
     saveTasks();
     renderTasks();
   };
 
-  // Delete task
   window.deleteTask = (idx) => {
     tasks.splice(idx, 1);
     saveTasks();
     renderTasks();
   };
 
-  // Add task
+  // Form submit listener (handle permission and add task)
   const form = document.getElementById('task-form');
-  const addBtn = document.getElementById('add-btn');
-
-  // Ask notification permission on button click
-  addBtn.addEventListener('click', (e) => {
-    if (!('Notification' in window)) return;
-
-    if (Notification.permission === 'default') {
-      Notification.requestPermission().then(permission => {
-        if (permission === 'granted') {
-          console.log('Notifications enabled');
-        } else if (permission === 'denied') {
-          alert('You blocked notifications. Enable them in browser settings.');
-        }
-      });
-    } else if (Notification.permission === 'denied') {
-      alert('Notifications are blocked. Enable them in your browser settings to receive reminders.');
-    }
-  });
-
-  // Submit form to save task
   form.addEventListener('submit', (e) => {
     e.preventDefault();
+
+    // Ask notification permission if not granted
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission().then(permission => {
+        if (permission !== 'granted') {
+          alert('Enable notifications to receive reminders.');
+        }
+      });
+    }
 
     const subject = document.getElementById('subject').value.trim();
     const topic = document.getElementById('topic').value.trim();
@@ -98,7 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Notification check every 10 seconds
+  // Check notifications every 10 seconds
   setInterval(() => {
     if (Notification.permission !== 'granted') return;
 
@@ -106,8 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
     tasks.forEach((task, idx) => {
       if (task.done || task.notified) return;
       const taskTime = new Date(`${task.date}T${task.time}:00`);
-      const diff = taskTime - now;
-      if (diff > 0 && diff < 60000) { // within next 60 seconds
+      if (taskTime - now > 0 && taskTime - now < 60000) {
         new Notification('Study Reminder', { body: `${task.subject}: ${task.topic}` });
         tasks[idx].notified = true;
         saveTasks();
